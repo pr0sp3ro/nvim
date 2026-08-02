@@ -284,38 +284,59 @@ return {
           local builtin = require("telescope.builtin")
 
           local goto_definition = function()
-            local params = vim.lsp.util.make_position_params()
-            vim.lsp.buf_request(bufnr, "textDocument/definition", params, function(err, result)
-              if err then
-                vim.notify(err.message, vim.log.levels.ERROR)
-                return
+            local win = vim.api.nvim_get_current_win()
+
+            vim.lsp.buf_request_all(bufnr, "textDocument/definition", function(request_client)
+              return vim.lsp.util.make_position_params(win, request_client.offset_encoding)
+            end, function(results)
+              local definitions = {}
+
+              for client_id, response in pairs(results) do
+                if response.err then
+                  vim.notify(response.err.message, vim.log.levels.ERROR)
+                elseif response.result then
+                  local locations = vim.islist(response.result) and response.result or { response.result }
+                  local response_client = vim.lsp.get_client_by_id(client_id)
+
+                  if response_client then
+                    for _, location in ipairs(locations) do
+                      table.insert(definitions, {
+                        location = location,
+                        position_encoding = response_client.offset_encoding,
+                      })
+                    end
+                  end
+                end
               end
-              if not result or vim.tbl_isempty(result) then
+
+              if vim.tbl_isempty(definitions) then
                 vim.notify("No definitions found", vim.log.levels.INFO)
                 return
               end
 
-              if not vim.islist(result) then
-                result = { result }
-              end
-
-              if #result == 1 then
-                vim.lsp.util.jump_to_location(result[1], "utf-8")
+              if #definitions == 1 then
+                local definition = definitions[1]
+                vim.lsp.util.show_document(definition.location, definition.position_encoding, { reuse_win = true })
                 return
               end
 
-              vim.ui.select(result, {
+              vim.ui.select(definitions, {
                 prompt = "Select definition",
-                format_item = function(loc)
+                format_item = function(definition)
+                  local loc = definition.location
                   local uri = loc.uri or loc.targetUri
                   local range = loc.range or loc.targetSelectionRange or loc.targetRange
                   local filename = uri and vim.fs.basename(vim.uri_to_fname(uri)) or "[unknown]"
                   local line = range and (range.start.line + 1) or 0
                   return string.format("%s:%d", filename, line)
                 end,
-              }, function(choice)
-                if choice then
-                  vim.lsp.util.jump_to_location(choice, "utf-8")
+              }, function(definition)
+                if definition then
+                  vim.lsp.util.show_document(
+                    definition.location,
+                    definition.position_encoding,
+                    { reuse_win = true }
+                  )
                 end
               end)
             end)
