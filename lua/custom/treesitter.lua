@@ -26,6 +26,7 @@ local parsers = {
   "vimdoc",
   "xml",
   "yaml",
+  "toml",
   "diff",
   "rust",
   "javascript",

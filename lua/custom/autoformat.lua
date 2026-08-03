@@ -5,6 +5,7 @@ local setup = function()
     formatters_by_ft = {
       lua = { "stylua" },
       blade = { "blade-formatter" },
+      toml = { "taplo" },
     },
   })
 

@@ -200,6 +200,8 @@ return {
           },
         },
 
+        taplo = true,
+
         clangd = {
           -- cmd = { "clangd", unpack(require("custom.clangd").flags) },
           -- TODO: Could include cmd, but not sure those were all relevant flags.
