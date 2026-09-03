@@ -48,6 +48,18 @@ vim.api.nvim_create_autocmd("FileType", {
       return
     end
 
+    -- PHP's built-in indentexpr (GetPhpIndent) relies on Vim syntax groups.
+    -- Keep regex syntax enabled alongside Tree-sitter, as the old
+    -- nvim-treesitter configuration did with additional_vim_regex_highlighting.
+    if vim.bo[args.buf].filetype == "php" then
+      vim.schedule(function()
+        if vim.api.nvim_buf_is_valid(args.buf) and vim.bo[args.buf].filetype == "php" then
+          vim.cmd("syntax on")
+          vim.bo[args.buf].syntax = "php"
+        end
+      end)
+    end
+
     local max_filesize = 100 * 1024
     local ok, stats = pcall(vim.uv.fs_stat, vim.api.nvim_buf_get_name(args.buf))
     if ok and stats and stats.size > max_filesize then
