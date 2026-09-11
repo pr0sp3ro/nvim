@@ -2,7 +2,10 @@ local treesitter = require("nvim-treesitter")
 
 local parsers = {
   "php",
+  "php_only",
   "phpdoc",
+  "html",
+  "html_tags",
   "bash",
   "blade",
   "c",
