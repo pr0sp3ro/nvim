@@ -1,6 +1,5 @@
 return {
   "esmuellert/codediff.nvim",
-
   keys = {
     {
       "<space>C",
@@ -8,6 +7,5 @@ return {
       desc = "Open CodeDiff",
     },
   },
-
   cmd = "CodeDiff",
 }
