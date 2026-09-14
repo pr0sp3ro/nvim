@@ -13,7 +13,7 @@ return {
   init = function()
     -- Your DBUI configuration
     vim.g.db_ui_use_nerd_fonts = 1
-    vim.keymap.set("n", "<space>D", ":DBUI<CR>")
+    vim.keymap.set("n", "<space>D", "<cmd>tabnew<bar>DBUI<cr>")
     vim.keymap.set("n", "<space>\\", ":DBUIToggle<CR>")
   end,
 }
