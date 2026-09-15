@@ -334,11 +334,7 @@ return {
                 end,
               }, function(definition)
                 if definition then
-                  vim.lsp.util.show_document(
-                    definition.location,
-                    definition.position_encoding,
-                    { reuse_win = true }
-                  )
+                  vim.lsp.util.show_document(definition.location, definition.position_encoding, { reuse_win = true })
                 end
               end)
             end)
