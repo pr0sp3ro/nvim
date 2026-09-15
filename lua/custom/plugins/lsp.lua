@@ -410,9 +410,9 @@ return {
       --     }
       -- )
 
-      vim.keymap.set("n", "<space>lr", ":LspRestart<cr>")
-      vim.keymap.set("n", "<space>ld", ":LspStop<cr>")
-      vim.keymap.set("n", "<space>le", ":LspStart<cr>")
+      vim.keymap.set("n", "<space>lr", "<cmd>lsp restart<cr>")
+      vim.keymap.set("n", "<space>ld", "<cmd>lsp disable<cr>")
+      vim.keymap.set("n", "<space>le", "<cmd>lsp enable<cr>")
 
       require("custom.autoformat").setup()
     end,
