@@ -47,14 +47,20 @@ treesitter.install(parsers)
 vim.api.nvim_create_autocmd("FileType", {
   desc = "Enable Tree-sitter highlighting and folds",
   callback = function(args)
-    if vim.bo[args.buf].filetype == "html" then
+    local filetype = vim.bo[args.buf].filetype
+
+    if filetype == "html" then
       return
     end
+
+    -- Dotenv files use Bash grammar for highlighting only. Their filetype stays
+    -- `env`, so bashls does not attach and report shell-specific diagnostics.
+    local language = filetype == "env" and "bash" or nil
 
     -- PHP's built-in indentexpr (GetPhpIndent) relies on Vim syntax groups.
     -- Keep regex syntax enabled alongside Tree-sitter, as the old
     -- nvim-treesitter configuration did with additional_vim_regex_highlighting.
-    if vim.bo[args.buf].filetype == "php" then
+    if filetype == "php" then
       vim.schedule(function()
         if vim.api.nvim_buf_is_valid(args.buf) and vim.bo[args.buf].filetype == "php" then
           vim.cmd("syntax on")
@@ -74,7 +80,7 @@ vim.api.nvim_create_autocmd("FileType", {
       return
     end
 
-    if not pcall(vim.treesitter.start, args.buf) then
+    if not pcall(vim.treesitter.start, args.buf, language) then
       return
     end
 
