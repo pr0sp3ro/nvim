@@ -46,7 +46,7 @@ local parsers = {
 treesitter.install(parsers)
 
 vim.api.nvim_create_autocmd("FileType", {
-  desc = "Enable Tree-sitter highlighting and folds",
+  desc = "Enable Tree-sitter highlighting",
   callback = function(args)
     local filetype = vim.bo[args.buf].filetype
 
@@ -84,9 +84,57 @@ vim.api.nvim_create_autocmd("FileType", {
     if not pcall(vim.treesitter.start, args.buf, language) then
       return
     end
+  end,
+})
 
-    vim.wo.foldmethod = "expr"
-    vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-    vim.wo.foldenable = false
+vim.api.nvim_create_autocmd({ "FileType", "BufWinEnter" }, {
+  desc = "Configure folding for the current buffer and window",
+  callback = function(args)
+    if vim.api.nvim_get_current_buf() ~= args.buf or vim.wo.diff then
+      return
+    end
+
+    local language = vim.bo[args.buf].filetype == "env" and "bash" or nil
+    local stats = vim.uv.fs_stat(vim.api.nvim_buf_get_name(args.buf))
+    local available = vim.bo[args.buf].buftype == "" and not (stats and stats.size > 100 * 1024)
+    local ok, parser
+    if available then
+      ok, parser = pcall(vim.treesitter.get_parser, args.buf, language)
+    end
+
+    if ok and parser and vim.treesitter.query.get(parser:lang(), "folds") then
+      vim.wo.foldmethod = "expr"
+      vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+    else
+      vim.wo.foldmethod = "manual"
+      vim.wo.foldexpr = "0"
+    end
+  end,
+})
+
+local function can_save_view(buf)
+  return vim.api.nvim_get_current_buf() == buf
+    and vim.bo[buf].buftype == ""
+    and vim.bo[buf].buflisted
+    and not vim.wo.diff
+    and vim.fn.filereadable(vim.api.nvim_buf_get_name(buf)) == 1
+end
+
+vim.api.nvim_create_autocmd("BufWinEnter", {
+  desc = "Restore folds and cursor after configuring folding",
+  callback = function(args)
+    if can_save_view(args.buf) then
+      vim.cmd("silent! loadview")
+    end
+  end,
+})
+
+vim.api.nvim_create_autocmd({ "BufWinLeave", "WinLeave", "VimLeavePre" }, {
+  desc = "Save folds and cursor for regular files",
+  callback = function(args)
+    if can_save_view(args.buf) then
+      vim.fn.mkdir(vim.o.viewdir, "p")
+      vim.cmd("silent! mkview!")
+    end
   end,
 })
