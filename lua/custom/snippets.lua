@@ -7,7 +7,6 @@ require("luasnip.loaders.from_snipmate").lazy_load({ paths = "./lua/custom/snipp
 luasnip.filetype_extend("php", { "html" })
 luasnip.filetype_extend("php", { "phpdoc" })
 -- luasnip.filetype_extend("php", {"blade"})
-luasnip.filetype_extend("php", { "html" })
 luasnip.filetype_extend("vue", { "html" })
 luasnip.filetype_extend("vue", { "javascript" })
 -- luasnip.filetype_extend("blade", {"html"})

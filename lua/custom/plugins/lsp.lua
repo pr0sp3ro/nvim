@@ -46,6 +46,8 @@ return {
 
       local servers = {
         bashls = true,
+        gopls = true,
+        vue_ls = true,
         lua_ls = {
           server_capabilities = {
             semanticTokensProvider = vim.NIL,
@@ -172,6 +174,22 @@ return {
         -- Enabled biome formatting, turn off all the other ones generally
         biome = true,
         vtsls = {
+          filetypes = extend("vtsls", "filetypes", { "vue" }),
+          settings = {
+            vtsls = {
+              tsserver = {
+                globalPlugins = {
+                  {
+                    name = "@vue/typescript-plugin",
+                    location = vim.fn.stdpath("data")
+                      .. "/mason/packages/vue-language-server/node_modules/@vue/language-server",
+                    languages = { "vue" },
+                    configNamespace = "typescript",
+                  },
+                },
+              },
+            },
+          },
           server_capabilities = {
             documentFormattingProvider = false,
           },
@@ -195,21 +213,14 @@ return {
                 enable = false,
                 url = "",
               },
-              -- schemas = require("schemastore").yaml.schemas(),
+              schemas = require("schemastore").yaml.schemas(),
             },
           },
         },
 
         taplo = true,
 
-        clangd = {
-          -- cmd = { "clangd", unpack(require("custom.clangd").flags) },
-          -- TODO: Could include cmd, but not sure those were all relevant flags.
-          --    looks like something i would have added while i was floundering
-          -- init_options = { clangdFileStatus = true },
-
-          filetypes = { "c" },
-        },
+        clangd = true,
 
         tailwindcss = {
           filetypes = extend("tailwindcss", "filetypes", { "vue" }),
@@ -243,15 +254,11 @@ return {
       require("mason").setup()
       local ensure_installed = {
         "stylua",
-        "lua_ls",
+        "blade-formatter",
+        "prettier",
         "delve",
-        "gopls",
-        "intelephense",
-        "pyright",
-        "bashls",
         "shellcheck",
         "hadolint",
-        "sqlls",
       }
 
       vim.list_extend(ensure_installed, servers_to_install)
@@ -269,11 +276,8 @@ return {
         vim.lsp.enable(name)
       end
 
-      local disable_semantic_tokens = {
-        lua = true,
-      }
-
       vim.api.nvim_create_autocmd("LspAttach", {
+        group = vim.api.nvim_create_augroup("custom-lsp", { clear = true }),
         callback = function(args)
           local bufnr = args.buf
           local client = assert(vim.lsp.get_client_by_id(args.data.client_id), "must have valid client")
@@ -340,25 +344,24 @@ return {
             end)
           end
 
-          vim.opt_local.omnifunc = "v:lua.vim.lsp.omnifunc"
+          vim.bo[bufnr].omnifunc = "v:lua.vim.lsp.omnifunc"
           vim.keymap.set("n", "gd", goto_definition, { buffer = bufnr })
-          vim.keymap.set("n", "gr", builtin.lsp_references, { buffer = 0 })
-          vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { buffer = 0 })
+          vim.keymap.set("n", "gr", builtin.lsp_references, { buffer = bufnr })
+          vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { buffer = bufnr })
           -- vim.keymap.set("n", "gT", vim.lsp.buf.type_definition, { buffer = 0 })
-          vim.keymap.set("n", "K", vim.lsp.buf.hover, { buffer = 0 })
+          vim.keymap.set("n", "K", vim.lsp.buf.hover, { buffer = bufnr })
 
           -- vim.keymap.set("n", "<space>cr", vim.lsp.buf.rename, { buffer = 0 })
-          vim.keymap.set("n", "<space>c", vim.lsp.buf.code_action, { buffer = 0 })
+          vim.keymap.set("n", "<space>c", vim.lsp.buf.code_action, { buffer = bufnr })
           -- vim.keymap.set("n", "<space>wd", builtin.lsp_document_symbols, { buffer = 0 })
 
-          vim.keymap.set("n", "gl", "<cmd>lua vim.diagnostic.open_float()<cr>")
-          vim.keymap.set("n", "[d", "<cmd>lua vim.diagnostic.goto_prev()<cr>")
-          vim.keymap.set("n", "]d", "<cmd>lua vim.diagnostic.goto_next()<cr>")
-
-          local filetype = vim.bo[bufnr].filetype
-          if disable_semantic_tokens[filetype] then
-            client.server_capabilities.semanticTokensProvider = nil
-          end
+          vim.keymap.set("n", "gl", vim.diagnostic.open_float, { buffer = bufnr })
+          vim.keymap.set("n", "[d", function()
+            vim.diagnostic.jump({ count = -1 })
+          end, { buffer = bufnr })
+          vim.keymap.set("n", "]d", function()
+            vim.diagnostic.jump({ count = 1 })
+          end, { buffer = bufnr })
 
           -- Override server capabilities
           if settings.server_capabilities then
@@ -464,9 +467,11 @@ return {
   },
   {
     "hedyhli/outline.nvim",
+    cmd = "Outline",
+    keys = {
+      { "<space>o", "<cmd>Outline<CR>", desc = "Toggle Outline" },
+    },
     config = function()
-      vim.keymap.set("n", "<space>o", "<cmd>Outline<CR>", { desc = "Toggle Outline" })
-
       require("outline").setup({
         outline_window = {
           position = "right",

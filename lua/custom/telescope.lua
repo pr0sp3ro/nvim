@@ -1,11 +1,15 @@
 local data = assert(vim.fn.stdpath("data")) --[[@as string]]
 local actions = require("telescope.actions")
 local actions_layout = require("telescope.actions.layout")
-local set = vim.keymap.set
 local builtin = require("telescope.builtin")
 
 require("telescope").setup({
   defaults = {
+    wrap_results = true,
+    history = {
+      path = vim.fs.joinpath(data, "telescope_history"),
+      limit = 100,
+    },
     path_display = { "smart" },
     initial_mode = "insert",
     layout_config = {
@@ -63,11 +67,6 @@ require("telescope").setup({
     },
   },
   extensions = {
-    wrap_results = true,
-    history = {
-      path = vim.fs.joinpath(data, "telescope_history.sqlite3"),
-      limit = 100,
-    },
     ["ui-select"] = {
       require("telescope.themes").get_dropdown({}),
     },

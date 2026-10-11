@@ -57,7 +57,7 @@ cmp.setup({
   -- Enable luasnip to handle snippet expansion for nvim-cmp
   snippet = {
     expand = function(args)
-      vim.snippet.expand(args.body)
+      require("luasnip").lsp_expand(args.body)
     end,
   },
 
@@ -116,10 +116,20 @@ cmp.setup({
 })
 
 -- Setup up vim-dadbod
-cmp.setup.filetype({ "sql" }, {
+cmp.setup.filetype({ "sql", "mysql", "plsql" }, {
   sources = {
     { name = "vim-dadbod-completion" },
     { name = "nvim_lsp" },
     { name = "buffer" },
   },
+})
+
+cmp.setup.cmdline({ "/", "?" }, {
+  mapping = cmp.mapping.preset.cmdline(),
+  sources = { { name = "buffer" } },
+})
+
+cmp.setup.cmdline(":", {
+  mapping = cmp.mapping.preset.cmdline(),
+  sources = cmp.config.sources({ { name = "path" } }, { { name = "cmdline" } }),
 })

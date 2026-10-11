@@ -1,6 +1,7 @@
 return {
   "j-morano/buffer_manager.nvim",
   dependencies = "nvim-lua/plenary.nvim",
+  keys = { "M", "<space>b" },
   config = function()
     local opts = { noremap = true }
 

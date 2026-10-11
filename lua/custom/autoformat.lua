@@ -6,28 +6,18 @@ local setup = function()
       lua = { "stylua" },
       blade = { "blade-formatter" },
       toml = { "taplo" },
+      vue = { "prettier" },
     },
   })
-
-  conform.formatters.injected = {
-    options = {
-      ignore_errors = false,
-      lang_to_formatters = {
-        sql = { "sleek" },
-      },
-    },
-  }
 
   vim.api.nvim_create_autocmd("BufWritePre", {
     group = vim.api.nvim_create_augroup("custom-conform", { clear = true }),
     callback = function(args)
-      local ft = vim.bo.filetype
+      local ft = vim.bo[args.buf].filetype
       if ft == "blade" then
         require("conform").format({
           bufnr = args.buf,
-          lsp_fallback = false,
-          quiet = true,
-          -- async = true,
+          lsp_format = "never",
         })
 
         return
@@ -43,8 +33,7 @@ local setup = function()
 
       require("conform").format({
         bufnr = args.buf,
-        lsp_fallback = true,
-        quiet = true,
+        lsp_format = "fallback",
       })
     end,
   })
@@ -60,10 +49,8 @@ local setup = function()
         ["end"] = { args.line2, end_line:len() },
       }
     end
-    require("conform").format({ async = true, lsp_fallback = true, range = range })
+    require("conform").format({ async = true, lsp_format = "fallback", range = range })
   end, { range = true })
 end
-
-setup()
 
 return { setup = setup }

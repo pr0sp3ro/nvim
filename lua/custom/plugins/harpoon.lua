@@ -2,16 +2,13 @@ return {
   "ThePrimeagen/harpoon",
   branch = "harpoon2",
   dependencies = { "nvim-lua/plenary.nvim" },
+  keys = { "m", "<space>a", "<space>1", "<space>2", "<space>3", "<space>4", "<space>5" },
   opts = {
-    menu = {
-      width = 80,
-      height = 15,
-    },
     settings = {
       save_on_toggle = true,
     },
   },
-  config = function()
+  config = function(_, opts)
     local harpoon = require("harpoon")
     local extensions = require("harpoon.extensions")
     harpoon:setup(opts)
@@ -26,7 +23,6 @@ return {
       harpoon.ui:toggle_quick_menu(harpoon:list(), {
         ui_max_width = 85,
         ui_width_ratio = 0.5,
-        ui_min_width = 40,
         border = "rounded",
         title = "Harpoon",
         height_in_lines = 15,

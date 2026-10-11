@@ -11,6 +11,7 @@ return {
       { "L3MON4D3/LuaSnip", build = "make install_jsregexp" },
       "saadparwaiz1/cmp_luasnip",
       "hrsh7th/cmp-cmdline",
+      "pr0sp3ro/copilot-cmp",
       "roobert/tailwindcss-colorizer-cmp.nvim",
     },
     config = function()

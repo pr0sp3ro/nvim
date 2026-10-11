@@ -1,5 +1,6 @@
 return {
   "kazhala/close-buffers.nvim",
+  keys = { "<space>dd", "<space>df", "<space>do", "<space>da" },
   config = function()
     local close_buffers = require("close_buffers")
 

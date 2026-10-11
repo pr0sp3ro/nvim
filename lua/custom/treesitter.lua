@@ -34,6 +34,7 @@ local parsers = {
   "rust",
   "javascript",
   "typescript",
+  "vue",
   "python",
   "regex",
   "sql",

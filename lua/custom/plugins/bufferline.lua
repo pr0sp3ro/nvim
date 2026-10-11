@@ -26,8 +26,8 @@ return {
           local is_empty_unnamed = vim.api.nvim_buf_get_name(buf_number) == ""
             and vim.api.nvim_buf_line_count(buf_number) == 1
             and vim.api.nvim_buf_get_lines(buf_number, 0, 1, false)[1] == ""
-            and not vim.api.nvim_buf_get_option(buf_number, "modified")
-            and vim.api.nvim_buf_get_option(buf_number, "buftype") == ""
+            and not vim.bo[buf_number].modified
+            and vim.bo[buf_number].buftype == ""
 
           return not is_empty_unnamed
         end,

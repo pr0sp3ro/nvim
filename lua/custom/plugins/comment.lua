@@ -1,12 +1,12 @@
 return {
   "numToStr/Comment.nvim",
-  "JoosepAlviste/nvim-ts-context-commentstring",
+  dependencies = { "JoosepAlviste/nvim-ts-context-commentstring" },
   config = function()
     require("Comment").setup({
       ignore = "^$",
       pre_hook = function(ctx)
         -- Skip ts-context-commentstring for SQL files to use proper -- comments
-        if vim.bo.filetype == "mysql" or "sql" then
+        if vim.bo.filetype == "mysql" or vim.bo.filetype == "sql" or vim.bo.filetype == "plsql" then
           return nil
         end
 

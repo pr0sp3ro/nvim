@@ -5,8 +5,8 @@ return {
     event = "InsertEnter",
     config = function()
       require("copilot").setup({
-        suggestion = { enabled = true },
-        panel = { enabled = true },
+        suggestion = { enabled = false },
+        panel = { enabled = false },
         filetypes = {
           yaml = true,
           markdown = true,
