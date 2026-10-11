@@ -10,7 +10,22 @@ local g = vim.g
 set("n", "<leader>q", "ZQ")
 set("n", "<leader>Q", ":w<CR>:qall<CR>")
 set("n", "<leader>w", ":w<CR>")
-cmd("command! SaveAsRoot :execute ':silent w !sudo tee % > /dev/null' | :edit!")
+vim.api.nvim_create_user_command("SaveAsRoot", function()
+  local path = vim.api.nvim_buf_get_name(0)
+
+  if path == "" or vim.bo.buftype ~= "" then
+    vim.notify("SaveAsRoot requires a named file buffer", vim.log.levels.ERROR)
+    return
+  end
+
+  vim.cmd("write !sudo tee -- " .. vim.fn.shellescape(path) .. " > /dev/null")
+
+  if vim.v.shell_error == 0 then
+    vim.cmd("edit!")
+  else
+    vim.notify("SaveAsRoot failed. Buffer changes have been preserved", vim.log.levels.ERROR)
+  end
+end, {})
 cmd("nmap <leader>W :SaveAsRoot<CR>")
 
 set("n", "Y", "y$")

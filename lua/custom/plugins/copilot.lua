@@ -17,6 +17,7 @@ return {
   },
   {
     "pr0sp3ro/copilot-cmp",
+    lazy = true,
     dependencies = { "pr0sp3ro/copilot.lua" },
     config = function()
       require("copilot_cmp").setup()

@@ -53,7 +53,7 @@ return {
       vim.api.nvim_set_hl(0, "SignColumn", { bg = "none" })
       vim.cmd.highlight("TelescopeSelection guifg=#ffffff guibg=#111111")
       vim.cmd.highlight("TelescopeMatching guifg=#456789")
-      vim.cmd.highlight("StatusLine guifg=#ffffff guibg=NONE ctermbg=NONE")
+      vim.cmd.highlight("StatusLine guifg=#ffffff guibg=NONE ctermbg=NONE gui=bold cterm=bold")
       vim.cmd.highlight("StatusLineNC guifg=#ffffff guibg=NONE ctermbg=NONE")
       vim.cmd.highlight("TabLine guifg=#ffffff guibg=NONE ctermbg=NONE")
       vim.cmd.highlight("TabLineFill guifg=#ffffff guibg=NONE ctermbg=NONE")

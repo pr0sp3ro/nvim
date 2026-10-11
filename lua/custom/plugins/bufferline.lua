@@ -18,7 +18,7 @@ return {
         mappings = true,
         mode = "buffers",
 
-        separator_style = { style = "none" },
+        separator_style = { "", "" },
         indicator = { style = "none" },
         -- enforce_regular_tabs = false,
         always_show_bufferline = false,

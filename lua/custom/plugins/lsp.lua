@@ -9,6 +9,9 @@ return {
       "b0o/SchemaStore.nvim",
     },
     config = function()
+      local biome_command = require("conform.util").find_executable({ "node_modules/.bin/biome" }, "")
+      local biome_root_dir = vim.lsp.config.biome.root_dir
+
       local extend = function(name, key, values)
         local default = vim.lsp.config[name]
         if not default then
@@ -68,10 +71,14 @@ return {
             local fname = vim.api.nvim_buf_get_name(bufnr)
             local dir = vim.fs.dirname(fname)
 
+            if not dir then
+              return
+            end
+
             local super = vim.fn.systemlist({ "git", "-C", dir, "rev-parse", "--show-superproject-working-tree" })[1]
 
             local root
-            if super and super ~= "" then
+            if vim.v.shell_error == 0 and super and super ~= "" then
               root = super
             else
               root = vim.fs.root(bufnr, { "composer.json", ".git" }) or vim.fn.getcwd()
@@ -172,7 +179,20 @@ return {
         pyright = true,
 
         -- Enabled biome formatting, turn off all the other ones generally
-        biome = true,
+        biome = {
+          manual_install = true,
+          cmd = function(dispatchers, config)
+            local command = biome_command(nil, { dirname = config.root_dir })
+            return vim.lsp.rpc.start({ command, "lsp-proxy" }, dispatchers)
+          end,
+          root_dir = function(bufnr, on_dir)
+            biome_root_dir(bufnr, function(root)
+              if biome_command(nil, { dirname = root }) ~= "" then
+                on_dir(root)
+              end
+            end)
+          end,
+        },
         vtsls = {
           filetypes = extend("vtsls", "filetypes", { "vue" }),
           settings = {
@@ -255,7 +275,6 @@ return {
       local ensure_installed = {
         "stylua",
         "blade-formatter",
-        "prettier",
         "delve",
         "shellcheck",
         "hadolint",

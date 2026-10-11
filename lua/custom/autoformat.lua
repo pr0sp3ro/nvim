@@ -1,41 +1,43 @@
 local setup = function()
-  -- Autoformatting Setup
+  -- Manual formatting setup
   local conform = require("conform")
+  local util = require("conform.util")
+  local web = { "biome", "prettier", stop_after_first = true, lsp_format = "never" }
+  local prettier = { "prettier", lsp_format = "never" }
+
   conform.setup({
+    default_format_opts = { lsp_format = "fallback" },
+    formatters = {
+      ["blade-formatter"] = { prepend_args = { "--indent-size", "2" } },
+      biome = {
+        command = util.find_executable({ "node_modules/.bin/biome" }, ""),
+        require_cwd = true,
+      },
+      prettier = {
+        command = util.find_executable({ "node_modules/.bin/prettier" }, ""),
+      },
+    },
     formatters_by_ft = {
       lua = { "stylua" },
       blade = { "blade-formatter" },
       toml = { "taplo" },
-      vue = { "prettier" },
+      javascript = web,
+      javascriptreact = web,
+      typescript = web,
+      typescriptreact = web,
+      json = web,
+      jsonc = web,
+      css = web,
+      vue = prettier,
+      html = prettier,
+      scss = prettier,
+      less = prettier,
+      yaml = prettier,
+      markdown = prettier,
+      graphql = prettier,
+      astro = prettier,
+      svelte = prettier,
     },
-  })
-
-  vim.api.nvim_create_autocmd("BufWritePre", {
-    group = vim.api.nvim_create_augroup("custom-conform", { clear = true }),
-    callback = function(args)
-      local ft = vim.bo[args.buf].filetype
-      if ft == "blade" then
-        require("conform").format({
-          bufnr = args.buf,
-          lsp_format = "never",
-        })
-
-        return
-      end
-
-      if ft == "c" then
-        return
-      end
-
-      if ft == "php" then
-        return
-      end
-
-      require("conform").format({
-        bufnr = args.buf,
-        lsp_format = "fallback",
-      })
-    end,
   })
 
   vim.keymap.set("n", "<leader>F", ":Format<CR>")
@@ -49,7 +51,7 @@ local setup = function()
         ["end"] = { args.line2, end_line:len() },
       }
     end
-    require("conform").format({ async = true, lsp_format = "fallback", range = range })
+    conform.format({ async = true, timeout_ms = 5000, range = range })
   end, { range = true })
 end
 
