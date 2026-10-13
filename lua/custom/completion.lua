@@ -125,8 +125,7 @@ cmp.setup.filetype({ "sql", "mysql", "plsql" }, {
 })
 
 cmp.setup.cmdline({ "/", "?" }, {
-  mapping = cmp.mapping.preset.cmdline(),
-  sources = { { name = "buffer" } },
+  enabled = false,
 })
 
 cmp.setup.cmdline(":", {
