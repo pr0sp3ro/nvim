@@ -27,6 +27,10 @@ local cmp = require("cmp")
 local copilot_cmp = require("copilot_cmp.comparators")
 
 cmp.setup({
+  preselect = cmp.PreselectMode.None,
+  completion = {
+    completeopt = "menu,menuone,noinsert",
+  },
   sources = {
     { name = "copilot" },
     { name = "luasnip" },
@@ -80,6 +84,14 @@ cmp.setup({
     comparators = {
       copilot_cmp.prioritize,
       copilot_cmp.score,
+      function(a, b)
+        local a_snippet = a.source.name == "luasnip"
+        local b_snippet = b.source.name == "luasnip"
+
+        if a_snippet ~= b_snippet then
+          return a_snippet
+        end
+      end,
       -- Below is the default comparitor list and order for nvim-cmp
       cmp.config.compare.offset,
       -- cmp.config.compare.scopes, --this is commented in nvim-cmp too
