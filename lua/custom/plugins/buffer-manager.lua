@@ -24,8 +24,8 @@ return {
       short_file_names = false,
       short_term_names = true,
       loop_nav = false,
-      width = 80,
-      height = 15,
+      width = 100,
+      height = 20,
     })
 
     local bmui = require("buffer_manager.ui")

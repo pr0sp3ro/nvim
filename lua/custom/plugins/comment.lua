@@ -10,6 +10,12 @@ return {
     require("Comment").setup({
       ignore = "^$",
       pre_hook = function(ctx)
+        -- Neovim 0.12 returns nil when no parser is available.
+        local ok, parser = pcall(vim.treesitter.get_parser, 0)
+        if not ok or not parser then
+          return vim.bo.commentstring
+        end
+
         -- Skip ts-context-commentstring for SQL files to use proper -- comments
         if vim.bo.filetype == "mysql" or vim.bo.filetype == "sql" or vim.bo.filetype == "plsql" then
           return nil

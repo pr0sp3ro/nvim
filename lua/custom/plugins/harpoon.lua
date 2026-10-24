@@ -21,11 +21,12 @@ return {
     end)
     vim.keymap.set("n", "m", function()
       harpoon.ui:toggle_quick_menu(harpoon:list(), {
-        ui_max_width = 85,
-        ui_width_ratio = 0.5,
+        ui_max_width = 100,
+        ui_fallback_width = 100,
+        ui_width_ratio = 1,
         border = "rounded",
         title = "Harpoon",
-        height_in_lines = 15,
+        height_in_lines = 20,
       })
     end)
 

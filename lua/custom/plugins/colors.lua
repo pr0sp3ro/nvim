@@ -48,15 +48,20 @@ return {
     config = function()
       vim.cmd.colorscheme("gruvbuddy")
       local palette = {
-        text = "#E6EDF3",
-        keyword = "#C792EA",
-        func = "#8ABEFF",
-        type = "#78DCCA",
-        string = "#9DDFB5",
-        constant = "#F78C6C",
-        property = "#FFCB6B",
-        comment = "#929DB0",
-        punctuation = "#B8C4D4",
+        text = "#d8d8d8",
+        keyword = "#aca1cf",
+        func = "#ffc799",
+        type = "#aca1cf",
+        string = "#90b99f",
+        constant = "#e6b99d",
+        property = "#d8d8d8",
+        comment = "#7e7e7e",
+        punctuation = "#a0a0a0",
+        muted = "#a0a0a0",
+        float = "#181818",
+        selection = "#34302d",
+        border = "#303030",
+        error = "#f5a191",
       }
       local syntax = {
         {
@@ -134,17 +139,73 @@ return {
         vim.api.nvim_set_hl(0, "@lsp.type." .. token, { link = group })
       end
 
-      vim.api.nvim_set_hl(0, "Normal", { fg = palette.text, bg = "none" })
-      vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
-      vim.api.nvim_set_hl(0, "LineNr", { bg = "none" })
-      vim.api.nvim_set_hl(0, "SignColumn", { bg = "none" })
-      vim.api.nvim_set_hl(0, "TelescopeSelection", { fg = palette.text, bg = "none", bold = true })
-      vim.api.nvim_set_hl(0, "TelescopeMatching", { fg = palette.func, bold = true })
-      vim.cmd.highlight("StatusLine guifg=#ffffff guibg=NONE ctermbg=NONE gui=bold cterm=bold")
-      vim.cmd.highlight("StatusLineNC guifg=#ffffff guibg=NONE ctermbg=NONE")
-      vim.cmd.highlight("TabLine guifg=#ffffff guibg=NONE ctermbg=NONE")
-      vim.cmd.highlight("TabLineFill guifg=#ffffff guibg=NONE ctermbg=NONE")
-      vim.api.nvim_set_hl(0, "SnippetTabstop", { bg = "none" })
+      local highlights = {
+        Normal = { fg = palette.text, bg = "none" },
+        NormalNC = { link = "Normal" },
+        NormalFloat = { fg = palette.text, bg = palette.float },
+        FloatBorder = { fg = palette.border, bg = palette.float },
+        FloatTitle = { fg = palette.func, bg = palette.float, bold = true },
+        WinSeparator = { fg = palette.border, bg = "none" },
+        LineNr = { fg = palette.comment, bg = "none" },
+        CursorLineNr = { fg = palette.func, bg = "none", bold = true },
+        CursorLine = { bg = palette.float },
+        SignColumn = { bg = "none" },
+        EndOfBuffer = { fg = palette.border, bg = "none" },
+        Visual = { fg = palette.text, bg = palette.selection },
+        Search = { fg = palette.text, bg = palette.selection },
+        IncSearch = { fg = "#101010", bg = palette.func },
+        CurSearch = { link = "IncSearch" },
+        MatchParen = { fg = palette.func, bg = palette.selection, bold = true },
+        Pmenu = { link = "NormalFloat" },
+        PmenuSel = { fg = palette.func, bg = palette.selection, bold = true },
+        PmenuSbar = { bg = palette.float },
+        PmenuThumb = { bg = palette.border },
+        PmenuMatch = { fg = palette.func, bold = true },
+        PmenuMatchSel = { fg = palette.func, bg = palette.selection, bold = true },
+        TelescopeNormal = { link = "NormalFloat" },
+        TelescopeBorder = { link = "FloatBorder" },
+        TelescopeTitle = { link = "FloatTitle" },
+        TelescopeSelection = { link = "PmenuSel" },
+        TelescopeSelectionCaret = { link = "PmenuSel" },
+        TelescopeMatching = { fg = palette.func, bold = true },
+        TelescopePromptPrefix = { fg = palette.func, bg = palette.float },
+        StatusLine = { fg = palette.text, bg = "none", bold = true },
+        StatusLineNC = { fg = palette.muted, bg = "none" },
+        TabLine = { fg = palette.muted, bg = "none" },
+        TabLineSel = { fg = palette.func, bg = "none", bold = true },
+        TabLineFill = { bg = "none" },
+        Directory = { fg = palette.func },
+        Title = { fg = palette.func, bold = true },
+        MoreMsg = { fg = palette.string },
+        Question = { fg = palette.func },
+        ErrorMsg = { fg = palette.error },
+        WarningMsg = { fg = palette.constant },
+        Error = { fg = palette.error },
+        Todo = { fg = palette.func, bold = true },
+        NonText = { fg = palette.border },
+        SpecialKey = { fg = palette.comment },
+        Folded = { fg = palette.muted, bg = palette.float },
+        FoldColumn = { fg = palette.comment, bg = "none" },
+        GitSignsAdd = { fg = palette.string },
+        GitSignsChange = { fg = palette.constant },
+        GitSignsDelete = { fg = palette.error },
+        SnippetTabstop = { bg = "none" },
+      }
+      for group, highlight in pairs(highlights) do
+        vim.api.nvim_set_hl(0, group, highlight)
+      end
+
+      local diagnostics = {
+        Error = palette.error,
+        Warn = palette.constant,
+        Info = palette.type,
+        Hint = palette.muted,
+        Ok = palette.string,
+      }
+      for severity, color in pairs(diagnostics) do
+        vim.api.nvim_set_hl(0, "Diagnostic" .. severity, { fg = color })
+        vim.api.nvim_set_hl(0, "DiagnosticUnderline" .. severity, { sp = color, undercurl = true })
+      end
     end,
   },
 }

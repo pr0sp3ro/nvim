@@ -428,6 +428,7 @@ return {
       --     }
       -- )
 
+      vim.keymap.set("n", "<space>li", "<cmd>checkhealth vim.lsp<cr>", { desc = "Show LSP info" })
       vim.keymap.set("n", "<space>lr", "<cmd>lsp restart<cr>")
       vim.keymap.set("n", "<space>ld", "<cmd>lsp disable<cr>")
       vim.keymap.set("n", "<space>le", "<cmd>lsp enable<cr>")
