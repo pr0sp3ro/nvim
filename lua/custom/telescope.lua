@@ -18,7 +18,7 @@ require("telescope").setup({
         height = 0.9,
       },
     },
-    file_ignore_patterns = { ".git/", "node_modules", "vendor" },
+    file_ignore_patterns = { "%.git/", "node_modules/", "^vendor/" },
     preview = true,
     mappings = {
       i = {

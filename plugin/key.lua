@@ -8,7 +8,7 @@ local g = vim.g
 -- vim.cmd[[ nnoremap <expr><silent> <leader>, &showtabline ? ":set showtabline=0\<cr>" : ":set showtabline=2\<cr>" ]]
 
 set("n", "<leader>q", "ZQ")
-set("n", "<leader>Q", ":w<CR>:qall<CR>")
+set("n", "<leader>Q", "<cmd>wqa<CR>")
 set("n", "<leader>w", ":w<CR>")
 vim.api.nvim_create_user_command("SaveAsRoot", function()
   local path = vim.api.nvim_buf_get_name(0)
@@ -29,7 +29,7 @@ end, {})
 cmd("nmap <leader>W :SaveAsRoot<CR>")
 
 set("n", "Y", "y$")
-set("v", "p", '"_dP')
+set("x", "p", "P")
 
 set("n", "<leader>r", "VP==")
 -- set("n", "<leader>C", "v$hP")
@@ -46,7 +46,6 @@ set("n", "<leader>P", "O<esc>P==")
 -- set("n", "<leader>d", "\"_d")
 -- set("v", "<leader>d", "\"_d")
 
-set("n", "Q", "gq")
 set("n", "Q", "<nop>")
 
 set("n", "n", "nzzzv")
@@ -59,9 +58,7 @@ set("v", "<", "<gv")
 set("v", ">", ">gv")
 set("n", "<leader>k", "Vypk$")
 set("n", "<leader>j", "VyPj$")
-set("v", "J", ":m '>+1<CR>gv=gv")
 set("x", "J", ":move '>+1<CR>gv-gv")
-set("v", "K", ":m '<-2<CR>gv=gv")
 set("x", "K", ":move '<-2<CR>gv-gv")
 
 -- set("n", "gch", "I<!-- <esc>A --><esc>0")
@@ -118,3 +115,5 @@ set("n", '<leader>"', ":%s/'/\"/g<CR>")
 
 set("n", "{", "5k")
 set("n", "}", "5j")
+
+set("n", "<leader>u", "<cmd>Undotree<CR>")

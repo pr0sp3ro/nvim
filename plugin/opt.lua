@@ -1,7 +1,7 @@
 local opt = vim.opt
 local cmd = vim.cmd
 
-cmd("set modifiable")
+cmd.packadd("nvim.undotree")
 opt.backup = false -- creates a backup file
 opt.swapfile = false -- creates a swapfile
 opt.undofile = true -- persistent undo

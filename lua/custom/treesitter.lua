@@ -65,7 +65,6 @@ vim.api.nvim_create_autocmd("FileType", {
     if filetype == "php" then
       vim.schedule(function()
         if vim.api.nvim_buf_is_valid(args.buf) and vim.bo[args.buf].filetype == "php" then
-          vim.cmd("syntax on")
           vim.bo[args.buf].syntax = "php"
         end
       end)

@@ -8,7 +8,7 @@ return {
       return oil.open()
     end)
     vim.keymap.set("n", "<space>E", function()
-      return oil.open(vim.loop.cwd())
+      return oil.open(vim.uv.cwd())
     end)
 
     oil.setup({
