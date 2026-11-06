@@ -260,6 +260,11 @@ return {
         },
 
         sqlls = true,
+
+        -- Installed explicitly below, mason-lspconfig does not map it to the mason package name
+        copilot = {
+          manual_install = true,
+        },
       }
 
       local servers_to_install = vim.tbl_filter(function(key)
@@ -278,6 +283,7 @@ return {
         "delve",
         "shellcheck",
         "hadolint",
+        "copilot-language-server",
       }
 
       vim.list_extend(ensure_installed, servers_to_install)
@@ -294,6 +300,9 @@ return {
         vim.lsp.config(name, config)
         vim.lsp.enable(name)
       end
+
+      vim.lsp.inline_completion.enable()
+      vim.keymap.set("i", "<C-l>", vim.lsp.inline_completion.get, { desc = "Accept inline completion" })
 
       vim.api.nvim_create_autocmd("LspAttach", {
         group = vim.api.nvim_create_augroup("custom-lsp", { clear = true }),

@@ -13,7 +13,6 @@ local kind_formatter = lspkind.cmp_format({
     nvim_lua = "[api]",
     path = "[path]",
     luasnip = "[snip]",
-    copilot = "[AI]",
     gh_issues = "[issues]",
   },
 })
@@ -24,7 +23,6 @@ require("tailwindcss-colorizer-cmp").setup({
 })
 
 local cmp = require("cmp")
-local copilot_cmp = require("copilot_cmp.comparators")
 
 cmp.setup({
   preselect = cmp.PreselectMode.None,
@@ -32,7 +30,6 @@ cmp.setup({
     completeopt = "menu,menuone,noinsert",
   },
   sources = {
-    { name = "copilot" },
     { name = "luasnip" },
     -- { name = "avante" },
     { name = "nvim_lsp" },
@@ -82,8 +79,6 @@ cmp.setup({
   sorting = {
     priority_weight = 2,
     comparators = {
-      copilot_cmp.prioritize,
-      copilot_cmp.score,
       function(a, b)
         local a_snippet = a.source.name == "luasnip"
         local b_snippet = b.source.name == "luasnip"
@@ -123,7 +118,8 @@ cmp.setup({
     }),
   },
   experimental = {
-    ghost_text = true,
+    -- Disabled: Copilot inline completion renders its own ghost text
+    ghost_text = false,
   },
 })
 
