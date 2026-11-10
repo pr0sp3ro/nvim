@@ -7,18 +7,21 @@ return {
 
     zenmode.setup({
       window = {
-        width = 265,
-        height = 60,
+        width = 0.8,
+        height = 0.9,
         options = {
-          -- signcolumn = "no",
-          number = true,
-          relativenumber = true,
-          -- cursorline = true,
-          -- cursorcolumn = true,
-          -- foldcolumn = "0",
-          list = true,
+          signcolumn = "no",
+          number = false,
+          relativenumber = false,
+          list = false,
         },
         backdrop = 0.95,
+      },
+      plugins = {
+        options = {
+          laststatus = 0,
+        },
+        diagnostics = { enabled = true },
       },
     })
 
@@ -26,8 +29,6 @@ return {
       zenmode.toggle()
 
       vim.wo.wrap = false
-      vim.wo.number = true
-      vim.wo.rnu = true
     end)
   end,
 }
