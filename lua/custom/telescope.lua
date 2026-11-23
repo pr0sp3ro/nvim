@@ -10,7 +10,7 @@ require("telescope").setup({
       path = vim.fs.joinpath(data, "telescope_history"),
       limit = 100,
     },
-    path_display = { "smart" },
+    path_display = { "filename_first" },
     initial_mode = "insert",
     layout_config = {
       horizontal = {
@@ -63,7 +63,7 @@ require("telescope").setup({
     -- builtin picker
 
     find_files = {
-      path_display = { "smart" },
+      path_display = { "filename_first" },
     },
   },
   extensions = {
